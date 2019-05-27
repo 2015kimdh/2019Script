@@ -73,68 +73,61 @@ def SearchButtonAction():
 
     RenderText.configure(state='disabled')
 
+
 def SearchLibrary():
-        import http.client
-        import urllib
-        from xml.dom.minidom import parse, parseString
-        conn = http.client.HTTPSConnection("openapi.gg.go.kr")
-        hangul_utf8 = urllib.parse.quote(str(InputLabel.get()))
-        conn.request("GET","/Resrestrtfastfood?KEY=fead735fe2264921943cc45687420e65&SIGUN_NM="+hangul_utf8)
-        req = conn.getresponse()
+    import http.client
+    import urllib
+    from xml.dom.minidom import parse, parseString
+    conn = http.client.HTTPSConnection("openapi.gg.go.kr")
+    hangul_utf8 = urllib.parse.quote(str(InputLabel.get()))
+    conn.request("GET", "/Resrestrtfastfood?KEY=fead735fe2264921943cc45687420e65&pSize=1000&SIGUN_NM=" + hangul_utf8)
+    req = conn.getresponse()
+    i = 0
 
-        global DataList
-        DataList.clear()
+    global DataList
+    DataList.clear()
 
-        if req.status == 200:
-            BooksDoc = req.read().decode('utf-8')
-        if BooksDoc == None:
-            print("에러")
-        else:
-            parseData = parseString(BooksDoc)
-            GeoInfoLibrary = parseData.childNodes
-            row = GeoInfoLibrary[0].childNodes
+    if req.status == 200:
+        BooksDoc = req.read().decode('utf-8')
+    if BooksDoc == None:
+        print("에러")
+    else:
+        from xml.etree import ElementTree
+        tree = ElementTree.fromstring(BooksDoc)
+        print(BooksDoc)
 
-            print(BooksDoc)
-            for item in row:
-                if item.nodeName == "row":
-                    subitems = item.childNodes
+        itemElements = tree.getiterator("row")
 
-                    if subitems[1].firstChild.nodeValue == InputLabel.get():
-                        pass
-                    # elif subitems[5].firstChild.nodeValue == InputLabel[0].get():
-                    #     pass
-                    else:
-                        continue
-                    if subitems[1].firstChild is not None:
-                        # tel = str(subitems[29].firstChild.nodeValue)
-                        # print(tel)
-                        # pass
-                        # if tel[0] is not '0':
-                        #     tel = "02-" + tel
-                        #     pass
-                        if str(subitems[9].firstChild.nodeValue) == "운영중":
-                            DataList.append((subitems[5].firstChild.nodeValue, subitems[33].firstChild.nodeValue, \
-                                             subitems[39].firstChild.nodeValue, subitems[43].firstChild.nodeValue, \
-                                             subitems[45].firstChild.nodeValue))
-                    else:
-                        if str(subitems[9].firstChild.nodeValue) == "운영중":
-                            DataList.append((subitems[5].firstChild.nodeValue, subitems[33].firstChild.nodeValue, \
-                                             subitems[39].firstChild.nodeValue, subitems[43].firstChild.nodeValue,\
-                                             subitems[45].firstChild.nodeValue))
-
-            for i in range(len(DataList)):
+        for row in itemElements:
+            name = row.find("BIZPLC_NM")
+            status = row.find("BSN_STATE_NM")
+            addr = row.find("REFINE_ROADNM_ADDR")
+            addr2 = row.find("REFINE_LOTNO_ADDR")
+            wido = row.find("REFINE_WGS84_LAT")
+            gyungdo = row.find("REFINE_WGS84_LOGT")
+            # if len(addr.text) > 0:
+            #     return {"NM":name.text, "addr":addr.text}\
+            if status.text == "운영중":
+                DataList.append((name.text, addr.text, addr2.text, wido.text, gyungdo.text))
                 RenderText.insert(INSERT, "[")
                 RenderText.insert(INSERT, i + 1)
                 RenderText.insert(INSERT, "] ")
                 RenderText.insert(INSERT, "시설명: ")
-                RenderText.insert(INSERT, DataList[i][0])
+                if name.text != None:
+                    # RenderText.insert(INSERT, name.text)
+                    RenderText.insert(INSERT, DataList[i][0])
                 RenderText.insert(INSERT, "\n")
-                RenderText.insert(INSERT, "종류: ")
-                RenderText.insert(INSERT, DataList[i][1])
-                RenderText.insert(INSERT, "\n")
-                RenderText.insert(INSERT, "도로명주소: ")
-                RenderText.insert(INSERT, DataList[i][1])
+
+                if addr.text != None:
+                    RenderText.insert(INSERT, "도로명주소: ")
+                    # RenderText.insert(INSERT, addr.text)
+                    RenderText.insert(INSERT, DataList[i][1])
+                else:
+                    RenderText.insert(INSERT, "지번주소: ")
+                    # RenderText.insert(INSERT, addr2.text)
+                    RenderText.insert(INSERT, DataList[i][2])
                 RenderText.insert(INSERT, "\n\n")
+                i += 1
 
 def InitRenderText():
    global RenderText
