@@ -1,10 +1,13 @@
 from tkinter import *
 from tkinter import font
+import maps
 import tkinter.messagebox
+
+
 g_Tk = Tk()
 w = 400
 h = 600
-g_Tk.geometry(str(w)+"x"+str(h)+"+750+200")
+g_Tk.geometry(str(w)+"x"+str(h)+"-100-100")
 DataList = []
 FrameNum = 0
 
@@ -72,17 +75,10 @@ def InitSearchButton():
 
 def SearchButtonAction():
 
-    #global SearchListBox
-    iSearchIndex =0#SearchListBox.curselection()[0]
-
-    if iSearchIndex == 0:
+    if FrameNum == 0:
         SearchLibrary()
-    elif iSearchIndex == 1:
-            pass#   SearchGoodFoodService()
-    elif iSearchIndex == 2:
-        pass#SearchMarket()
-    elif iSearchIndex == 3:
-        pass#SearchCultural()
+    elif FrameNum == 1:
+        SearchMap()
 
 
 
@@ -238,11 +234,10 @@ def SearchLibrary():
 def InitRenderText():
    global RenderText
    RenderTextScrollbar = Scrollbar(g_Tk)
-   RenderTextScrollbar.place(x=w*0.9, y=h/10 * 7, height = h/10*1.5)
-   RenderTextScrollbar#.place(x=375, y=200)
+   RenderTextScrollbar.place(x=w * 0.9, y=h / 30, height=h / 10 * 5.2)
 
    TempFont = font.Font(g_Tk, size=10, family='Consolas')
-   RenderText = Text(g_Tk, width=45, height=5,borderwidth=12, relief='ridge', yscrollcommand=RenderTextScrollbar.set)
+   RenderText = Text(g_Tk, width=45, height=12, borderwidth=12, relief='ridge', yscrollcommand=RenderTextScrollbar.set)
    j = 0
 
    for i in DataList:
@@ -270,13 +265,12 @@ def InitRenderText():
 
 
    RenderText.pack()
-   RenderText.place(x=w/20, y=h/10 * 7)
+   RenderText.place(x=w/20, y=h / 30)
    RenderTextScrollbar.config(command=RenderText.yview)
    # RenderTextScrollbar.pack(side=RIGHT, fill=Y)
 
-
-
    RenderText.configure(state='disabled')
+
 
 def InitRenderText_1():
     global RenderText_1
@@ -297,6 +291,31 @@ def InitRenderText_1():
 
     #…
 
+
+def SearchMap():
+    global m_frame
+
+    if MapEntry.get() is not '':
+        s = int(MapEntry.get())
+
+        map_image = maps.show_map(float(DataList[s][4]), float(DataList[s][3]))
+
+        m_frame = Frame(g_Tk)
+        m_frame.place(x=w / 10, y=h / 2)
+        Label(m_frame, image=map_image, height=h/3, width=w * 2 / 3, background="white").pack()
+
+
+def InitMapInput():
+
+    global MapEntry
+
+    TempFont = font.Font(g_Tk, size=15, weight='bold', family='Consolas')
+    MapEntry = Entry(g_Tk, font=TempFont, width=20, borderwidth=10, relief='sunken')
+    MapEntry.place(x=w / 10 * 2.5, y=h / 10 * 3.5)
+
+    Label(g_Tk, font=TempFont, text="번호").place(x=w/20, y=h / 10 * 3.7)
+
+
 def WizetClear():
 
     global  FrameNum
@@ -305,6 +324,8 @@ def WizetClear():
 
     if FrameNum == 0:
         RenderText.destroy()
+        MapEntry.destroy()
+        m_frame.destroy()
         InitTopText()
         # InitSearchListBox()
         InitInputLabel()
@@ -322,13 +343,17 @@ def WizetClear():
         MainText.destroy()
         DongText.destroy()
         InitRenderText()
+        InitMapInput()
+
+
+
+
 
 InitTopText()
 # InitSearchListBox()
 InitInputLabel()
 InitRenderText_1()
 InitSearchButton()
-
 g_Tk.update()
 g_Tk.after_cancel(g_Tk)
 g_Tk.mainloop()
