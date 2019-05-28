@@ -39,10 +39,15 @@ def InitTopText():
 
 def InitInputLabel():
     global InputLabel
+    global InputLabel1
     TempFont = font.Font(g_Tk, size=15, weight='bold', family ='Consolas')
     InputLabel = Entry(g_Tk, font =TempFont, width =26, borderwidth =12, relief ='ridge')
     InputLabel.pack()
-    InputLabel.place(x=w*0.2, y=h/10*8)
+    InputLabel.place(x=w*0.2, y=h/10*7)
+
+    InputLabel1 = Entry(g_Tk, font=TempFont, width=26, borderwidth=12, relief='ridge')
+    InputLabel1.pack()
+    InputLabel1.place(x=w * 0.2, y=h / 10 * 8)
 
     # InputLabel[1] = Entry(g_Tk, font=TempFont, width=26, borderwidth=12, relief='ridge')
     # InputLabel[1].pack()
@@ -98,36 +103,81 @@ def SearchLibrary():
 
         itemElements = tree.getiterator("row")
 
-        for row in itemElements:
-            name = row.find("BIZPLC_NM")
-            status = row.find("BSN_STATE_NM")
-            addr = row.find("REFINE_ROADNM_ADDR")
-            addr2 = row.find("REFINE_LOTNO_ADDR")
-            wido = row.find("REFINE_WGS84_LAT")
-            gyungdo = row.find("REFINE_WGS84_LOGT")
-            # if len(addr.text) > 0:
-            #     return {"NM":name.text, "addr":addr.text}\
-            if status.text == "운영중":
-                DataList.append((name.text, addr.text, addr2.text, wido.text, gyungdo.text))
-                RenderText.insert(INSERT, "[")
-                RenderText.insert(INSERT, i + 1)
-                RenderText.insert(INSERT, "] ")
-                RenderText.insert(INSERT, "시설명: ")
-                if name.text != None:
-                    # RenderText.insert(INSERT, name.text)
-                    RenderText.insert(INSERT, DataList[i][0])
-                RenderText.insert(INSERT, "\n")
+        if InputLabel1.get() == "":
+            for row in itemElements:
+                name = row.find("BIZPLC_NM")
+                status = row.find("BSN_STATE_NM")
+                addr = row.find("REFINE_ROADNM_ADDR")
+                addr2 = row.find("REFINE_LOTNO_ADDR")
+                wido = row.find("REFINE_WGS84_LAT")
+                gyungdo = row.find("REFINE_WGS84_LOGT")
+                # if len(addr.text) > 0:
+                #     return {"NM":name.text, "addr":addr.text}\
+                if status.text == "운영중":
+                    DataList.append((name.text, addr.text, addr2.text, wido.text, gyungdo.text))
+                    RenderText.insert(INSERT, "[")
+                    RenderText.insert(INSERT, i + 1)
+                    RenderText.insert(INSERT, "] ")
+                    RenderText.insert(INSERT, "시설명: ")
+                    if name.text != None:
+                        # RenderText.insert(INSERT, name.text)
+                        RenderText.insert(INSERT, DataList[i][0])
+                    RenderText.insert(INSERT, "\n")
 
-                if addr.text != None:
-                    RenderText.insert(INSERT, "도로명주소: ")
-                    # RenderText.insert(INSERT, addr.text)
-                    RenderText.insert(INSERT, DataList[i][1])
-                else:
-                    RenderText.insert(INSERT, "지번주소: ")
-                    # RenderText.insert(INSERT, addr2.text)
-                    RenderText.insert(INSERT, DataList[i][2])
-                RenderText.insert(INSERT, "\n\n")
-                i += 1
+                    if addr.text != None:
+                        RenderText.insert(INSERT, "도로명주소: ")
+                        # RenderText.insert(INSERT, addr.text)
+                        RenderText.insert(INSERT, DataList[i][1])
+                    else:
+                        RenderText.insert(INSERT, "지번주소: ")
+                        # RenderText.insert(INSERT, addr2.text)
+                        RenderText.insert(INSERT, DataList[i][2])
+                    RenderText.insert(INSERT, "\n\n")
+                    i += 1
+        else:
+            for row in itemElements:
+                name = row.find("BIZPLC_NM")
+                status = row.find("BSN_STATE_NM")
+                addr = row.find("REFINE_ROADNM_ADDR")
+                addr2 = row.find("REFINE_LOTNO_ADDR")
+                wido = row.find("REFINE_WGS84_LAT")
+                gyungdo = row.find("REFINE_WGS84_LOGT")
+                # if len(addr.text) > 0:
+                #     return {"NM":name.text, "addr":addr.text}\
+                if status.text == "운영중":
+                    if addr.text != None:
+                        if InputLabel1.get() in addr.text:
+                            DataList.append((name.text, addr.text, addr2.text, wido.text, gyungdo.text))
+                            RenderText.insert(INSERT, "[")
+                            RenderText.insert(INSERT, i + 1)
+                            RenderText.insert(INSERT, "] ")
+                            RenderText.insert(INSERT, "시설명: ")
+                            if name.text != None:
+                                # RenderText.insert(INSERT, name.text)
+                                RenderText.insert(INSERT, DataList[i][0])
+                            RenderText.insert(INSERT, "\n")
+                            RenderText.insert(INSERT, "도로명주소: ")
+                            # RenderText.insert(INSERT, addr.text)
+                            RenderText.insert(INSERT, DataList[i][1])
+                            RenderText.insert(INSERT, "\n\n")
+                            i += 1
+                    else:
+                        if InputLabel1.get() in addr2.text:
+                            DataList.append((name.text, addr.text, addr2.text, wido.text, gyungdo.text))
+                            RenderText.insert(INSERT, "[")
+                            RenderText.insert(INSERT, i + 1)
+                            RenderText.insert(INSERT, "] ")
+                            RenderText.insert(INSERT, "시설명: ")
+                            if name.text != None:
+                                # RenderText.insert(INSERT, name.text)
+                                RenderText.insert(INSERT, DataList[i][0])
+                            RenderText.insert(INSERT, "\n")
+                            RenderText.insert(INSERT, "지번주소: ")
+                            # RenderText.insert(INSERT, addr2.text)
+                            RenderText.insert(INSERT, DataList[i][2])
+                            RenderText.insert(INSERT, "\n\n")
+                            i += 1
+
 
 def InitRenderText():
    global RenderText
