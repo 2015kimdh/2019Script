@@ -1,7 +1,9 @@
 from tkinter import *
 import tkinter.messagebox
 
+
 class TickTacToe:
+
     def pressed(self, Row, Col):
         for r in range(5, -1, -1): # r = 5 , 4, 3 , 2 , 1
             if self.buttonList[r * 7 + Col]['text'] == ' ':
@@ -14,140 +16,9 @@ class TickTacToe:
                 self.turn = not self.turn
                 break
 
-        for r in range(6):
-            for c in range(7):
-                print(self.board[r * 7 + c], end=' ')
-            print()
-        print()
         self.endGame()
 
-    def SetendGame(self, Row, Col):
-        self.buttonList[Row * 7 + Col].configure(relief="solid")
-
-    def endGame(self):
-        count = 0
-        temp = ' '
-        # 가로 체크
-        for r in range(5, -1, -1):
-            for c in range(7):
-                if self.board[r * 7 + c] != ' ':
-                    if self.board[r * 7 + c] == temp:
-                        count += 1
-                    else:
-                        temp = self.board[r * 7 + c]
-                        count = 0
-                else:
-                    temp = ' '
-                    count = 0
-                if 3 <= count:
-                    self.MBox(temp)
-                    count = 0
-                    break
-
-        count = 0
-        temp = ' '
-        # 세로 체크
-        for c in range(7):
-            for r in range(5, -1, -1):
-                if self.board[r * 7 + c] != ' ':
-                    if self.board[r * 7 + c] == temp:
-                        count += 1
-                    else:
-                        temp = self.board[r * 7 + c]
-                        count = 0
-                else:
-                    temp = ' '
-                    count = 0
-                if 3 <= count:
-                    self.MBox(temp)
-                    count = 0
-                    break
-
-        count = 0
-        temp = ' '
-        # 오른쪽 위 대각선 체크
-        # 왼쪽 위부터 밑으로 내려오면서 오른쪽 위 대각선 체크
-        for r in range(3, 6):
-            for i in range(r + 1):
-                if self.board[r * 7 - i * 6] != ' ':
-                    if self.board[r * 7 - i * 6] == temp:
-                        count += 1
-                    else:
-                        temp = self.board[r * 7 - i * 6]
-                        count = 0
-                else:
-                    temp = ' '
-                    count = 0
-                if 3 <= count:
-                    self.MBox(temp)
-                    count = 0
-                    break
-        # 왼쪽 아래 부터 오른쪽으로 가면서 오른쪽 위 대각선 체크
-        count = 0
-        temp = ' '
-        for c in range(3):
-            for i in range(6 - c):
-                if self.board[36 + c - i * 6] != ' ':
-                    if self.board[36 + c - i * 6] == temp:
-                        count += 1
-                    else:
-                        temp = self.board[36 + c - i * 6]
-                        count = 0
-                else:
-                    temp = ' '
-                    count = 0
-                if 3 <= count:
-                    self.MBox(temp)
-                    count = 0
-                    break
-
-
-        count = 0
-        temp = ' '
-        # 왼쪽 위 대각선 체크
-        # 오른쪽 위부터 밑으로 내려오면서 왼쪽 위 대각선 체크
-        for r in range(4, 7):
-            for i in range(r):
-                if self.board[r * 7 - 1 - i * 8] != ' ':
-                    if self.board[r * 7 - 1 - i * 8] == temp:
-                        count += 1
-                    else:
-                        temp = self.board[r * 7 - 1 - i * 8]
-                        count = 0
-                else:
-                    temp = ' '
-                    count = 0
-                if 3 <= count:
-                    self.MBox(temp)
-                    count = 0
-                    break
-        # 오른쪽 아래 부터 왼쪽으로 가면서 왼쪽 위 대각선 체크
-        count = 0
-        temp = ' '
-        for c in range(3):
-            for i in range(6 - c):
-                if self.board[40 - c - i * 8] != ' ':
-                    if self.board[40 - c - i * 8] == temp:
-                        count += 1
-                    else:
-                        temp = self.board[40 - c - i * 8]
-                        count = 0
-                else:
-                    temp = ' '
-                    count = 0
-                if 3 <= count:
-                    self.MBox(temp)
-                    count = 0
-                    break
-
-        if not ' ' in self.board:
-            self.MBox(' ')
-
-
-
-
-
-    def MBox(self, txt):
+    def MBox(self,txt):
         if txt == 'O':
             tkinter.messagebox.showinfo("승리", "O 승리!")
         elif txt == 'X':
@@ -155,6 +26,54 @@ class TickTacToe:
         else:
             tkinter.messagebox.showinfo("비김", "비겼습니다!")
         self.again()
+
+
+    def endGame(self):
+        for i in range(6):
+            for j in range(4):
+                if self.board[i * 7 + j] != ' ':
+                        if self.board[i * 7 + j] == self.board[i * 7 + j + 1] == self.board[i * 7 + j + 2] == self.board[i * 7 + j + 3]:
+                            self.buttonList[i * 7 + j].configure(relief="solid")
+                            self.buttonList[i * 7 + j + 1].configure(relief="solid")
+                            self.buttonList[i * 7 + j + 2].configure(relief="solid")
+                            self.buttonList[i * 7 + j + 3].configure(relief="solid")
+                            self.MBox(self.board[i * 7 + j])
+
+        for i in range(3):
+            for j in range(7):
+                if self.board[7 * i + j] != ' ':
+                    if self.board[7 * i + j] == self.board[7*(i+1) + j] == self.board[7*(i+2) + j] == self.board[7*(i+3) + j]:
+                        self.buttonList[7 * i + j].configure(relief="solid")
+                        self.buttonList[7*(i+1) + j].configure(relief="solid")
+                        self.buttonList[7*(i+2) + j].configure(relief="solid")
+                        self.buttonList[7*(i+3) + j].configure(relief="solid")
+                        self.MBox(self.board[7 * i + j])
+
+        for i in range(3):
+            for j in range(4):
+                if self.board[7 * i + j] != ' ':
+                    if self.board[7 * i + j] == self.board[7*(i+1) + j+1] == self.board[7*(i+2) + j+2] == self.board[7*(i+3) + j+3]:
+                        self.buttonList[7 * i + j].configure(relief="solid")
+                        self.buttonList[7 * (i+1) + j+1].configure(relief="solid")
+                        self.buttonList[7 * (i+2) + j+2].configure(relief="solid")
+                        self.buttonList[7 * (i+3) + j+3].configure(relief="solid")
+                        self.MBox(self.board[7 * i + j])
+
+        for i in range(3):
+            for j in range(6, 2, -1):
+                if self.board[7*i + j] != ' ':
+                    if self.board[7 * i + j] == self.board[7*(i+1) + j-1] == self.board[7*(i+2) + j-2] == self.board[7*(i+3) + j-3]:
+                        self.buttonList[7*i + j].configure(relief="solid")
+                        self.buttonList[7*(i+1) + j-1].configure(relief="solid")
+                        self.buttonList[7*(i+2) + j-2].configure(relief="solid")
+                        self.buttonList[7*(i+3) + j-3].configure(relief="solid")
+                        self.MBox(self.board[i * 7 + j])
+
+        if not ' ' in self.board:
+            for r in range(6):
+                for c in range(7):
+                    self.buttonList[r * 7 + c].configure(relief='solid')
+            self.MBox(' ')
 
 
     def again(self):
@@ -180,7 +99,7 @@ class TickTacToe:
         for r in range(6):
             for c in range(7):
                 self.board.append(' ')
-                self.buttonList.append(Button(frame1, text=" ", image=self.imageList[2],
+                self.buttonList.append(Button(frame1, relief='flat', text=" ", image=self.imageList[2],
                                               command=lambda Row = r, Col = c:self.pressed(Row, Col)))
                 self.buttonList[r*7+c].grid(row=r, column=c)
         frame2 = Frame(window)
