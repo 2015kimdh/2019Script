@@ -5,11 +5,12 @@ from tkinter import messagebox
 
 class MainFrame:
     def __init__(self, window, w, h):
-        #self.frame = Frame(window)  # window 에 초기화면 frame을 생성한다.
-        self.frame = window
 
+        #self.frame = window
         self.width = w
         self.height = h
+        self.frame = Frame(window, width=self.width, height=self.height)  # window 에 초기화면 frame을 생성한다.
+
         self.TempFont = font.Font(size=12, family='Consolas') # 여기저기서 쓸 폰트. 맘에 안 들면 바꿔라
 
         # 당장은 안 쓰지만 이따가 필요한 것들
@@ -44,7 +45,7 @@ class MainFrame:
 
         if req.status == 200:
             Doc = req.read().decode('utf-8')
-           \if Doc is None:
+        if Doc is None:
             print("에러")
         else:
             from xml.etree import ElementTree
