@@ -189,10 +189,11 @@ def Frame_2_InitRenderText():
 
    global DataList
    global DataListTemp
-   DataListTemp = DataList
+   DataListTemp.clear()
 
    if NameLabel.get() is '':
         for i in DataList:
+            DataListTemp.append(i)
             Frame2RenderText.insert(INSERT, "[")
             Frame2RenderText.insert(INSERT, j + 1)
             Frame2RenderText.insert(INSERT, "] ")
@@ -214,7 +215,6 @@ def Frame_2_InitRenderText():
                 Frame2RenderText.insert(INSERT, "\n\n")
             j += 1
    else:
-       DataListTemp.clear()
        for i in DataList:
            if NameLabel.get() in i[0]:
                DataListTemp.append(i)
@@ -261,7 +261,7 @@ def SearchMap():
     if MapEntry.get() is not '':
         s = int(MapEntry.get())
         m_frame = Frame()
-        map_image = maps.show_map(float(DataList[s][4]), float(DataList[s][3]))
+        map_image = maps.show_map(float(DataListTemp[s][4]), float(DataListTemp[s][3]))
         m_frame.place(x=w / 10, y=h / 2)
         Label(m_frame, image=map_image, height=h/3, width=w * 2 / 2.5, background="white", relief ='ridge', borderwidth =10).pack()
 
