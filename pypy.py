@@ -9,6 +9,7 @@ w = 600
 h = 800
 g_Tk.geometry(str(w)+"x"+str(h)+"-100+200")
 DataList = []
+DataListTemp = []
 FrameNum = 0
 m_frame = None
 
@@ -56,10 +57,11 @@ def InitSearchButton():
     Search1Button.place(x=w * 0.2, y=h / 10 * 9)
 
 def SearchButtonAction():
-
     if FrameNum == 0:
         SearchLibrary()
     elif FrameNum == 1:
+        Frame_2_InitRenderText()
+    elif FrameNum == 2:
         SearchMap()
 
 
@@ -124,7 +126,7 @@ def InitRenderText():
    RenderText = Text(g_Tk, width=70, height=15, borderwidth=12, relief='ridge', yscrollcommand=RenderTextScrollbar.set)
    j = 0
 
-   for i in DataList:
+   for i in DataListTemp:
        RenderText.insert(INSERT, "[")
        RenderText.insert(INSERT, j + 1)
        RenderText.insert(INSERT, "] ")
@@ -175,10 +177,86 @@ def InitRenderText_1():
 
     #…
 
+def Frame_2_InitRenderText():
+   global Frame2RenderText
+   global Frame2RenderTextScrollbar
+   Frame2RenderTextScrollbar = Scrollbar(g_Tk)
+   Frame2RenderTextScrollbar.place(x=w * 0.91, y=h / 30, height=h / 10 * 2.8)
+
+   TempFont = font.Font(g_Tk, size=10, family='Consolas')
+   Frame2RenderText = Text(g_Tk, width=70, height=15, borderwidth=12, relief='ridge', yscrollcommand=Frame2RenderTextScrollbar.set)
+   j = 0
+
+   global DataList
+   global DataListTemp
+   DataListTemp = DataList
+
+   if NameLabel.get() is '':
+        for i in DataList:
+            Frame2RenderText.insert(INSERT, "[")
+            Frame2RenderText.insert(INSERT, j + 1)
+            Frame2RenderText.insert(INSERT, "] ")
+            Frame2RenderText.insert(INSERT, "시설명: ")
+            if i[0] != None:
+                # RenderText.ins#ert(INSERT, name.text)
+                Frame2RenderText.insert(INSERT, i[0])
+                Frame2RenderText.insert(INSERT, "\n")
+
+            if i[1] != None:
+                Frame2RenderText.insert(INSERT, "도로명주소: ")
+                # RenderText.insert(INSERT, addr.text)
+                Frame2RenderText.insert(INSERT, i[1])
+                Frame2RenderText.insert(INSERT, "\n\n")
+            else:
+                Frame2RenderText.insert(INSERT, "지번주소: ")
+                # RenderText.insert(INSERT, addr2.text)
+                Frame2RenderText.insert(INSERT, i[2])
+                Frame2RenderText.insert(INSERT, "\n\n")
+            j += 1
+   else:
+       DataListTemp.clear()
+       for i in DataList:
+           if NameLabel.get() in i[0]:
+               DataListTemp.append(i)
+               Frame2RenderText.insert(INSERT, "[")
+               Frame2RenderText.insert(INSERT, j + 1)
+               Frame2RenderText.insert(INSERT, "] ")
+               Frame2RenderText.insert(INSERT, "시설명: ")
+
+               if i[0] != None:
+                   # RenderText.ins#ert(INSERT, name.text)
+                   Frame2RenderText.insert(INSERT, i[0])
+                   Frame2RenderText.insert(INSERT, "\n")
+
+               if i[1] != None:
+                   Frame2RenderText.insert(INSERT, "도로명주소: ")
+                   # RenderText.insert(INSERT, addr.text)
+                   Frame2RenderText.insert(INSERT, i[1])
+                   Frame2RenderText.insert(INSERT, "\n\n")
+               else:
+                   Frame2RenderText.insert(INSERT, "지번주소: ")
+                   # RenderText.insert(INSERT, addr2.text)
+                   Frame2RenderText.insert(INSERT, i[2])
+                   Frame2RenderText.insert(INSERT, "\n\n")
+               j += 1
+
+
+   Frame2RenderText.pack()
+   Frame2RenderText.place(x=w/20, y=h / 30)
+   Frame2RenderTextScrollbar.config(command=Frame2RenderText.yview)
+   # RenderTextScrollbar.pack(side=RIGHT, fill=Y)
+
+   Frame2RenderText.configure(state='disabled')
+
+def InitNameLabel():
+    global NameLabel
+    TempFont = font.Font(g_Tk, size=15, weight='bold', family ='Consolas')
+    NameLabel = Entry(g_Tk, font =TempFont, width =35, borderwidth =12, relief ='ridge')
+    NameLabel.pack()
+    NameLabel.place(x=w*0.2, y=h/10*7)
 
 def SearchMap():
     global m_frame
-
 
     if MapEntry.get() is not '':
         s = int(MapEntry.get())
@@ -204,7 +282,7 @@ def WizetClear():
     global m_frame
     global  FrameNum
     FrameNum += 1
-    FrameNum = FrameNum % 2
+    FrameNum = FrameNum % 3
 
     if FrameNum == 0:
         RenderText.destroy()
@@ -228,8 +306,19 @@ def WizetClear():
         SigunText.destroy()
         MainText.destroy()
         DongText.destroy()
+
+        InitNameLabel()     #필터링할 조건 이름 주기 / 데이터리스트를 초기화하거나 하지는 않음
+        Frame_2_InitRenderText()    #위에서 필터링 해준거 담아오는 텍스트
+
+    elif FrameNum == 2:
+        NameLabel.destroy()
+        Frame2RenderText.destroy()
+        Frame2RenderTextScrollbar.destroy()
+
         InitRenderText()
         InitMapInput()
+
+
 
 
 InitTopText()
