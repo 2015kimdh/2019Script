@@ -33,7 +33,7 @@ def Send_To_user():
     num = int(MapEntry.get())
 
     senderAddr = "moss2223@gmail.com"
-    password = "gmltmd29"
+    password = "비밀번호"
     recipientAddr = mailEntry.get()
 
     if DataList[num][1] is None:
